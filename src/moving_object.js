@@ -50,4 +50,8 @@ MovingObject.prototype.isCollidedWith = function isCollidedWith(otherObject) {
   return centerDist < (this.radius + otherObject.radius);
 };
 
+MovingObject.prototype.collideWith = function collideWith(otherObject) {
+  // default do nothing
+};
+
 module.exports = MovingObject
