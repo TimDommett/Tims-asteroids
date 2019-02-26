@@ -1,21 +1,12 @@
-const MovingObject = require("./moving_object.js")
+const Game = require("./game");
+const GameView = require("./game_view");
 
-window.MovingObject = MovingObject;
-
-document.addEventListener("DOMContentLoaded", function(){
-  const canvasEl = document.getElementById("game-canvas");
-  canvasEl.width = 1000;
-  canvasEl.height = 1000;
+document.addEventListener("DOMContentLoaded", function () {
+  const canvasEl = document.getElementsByTagName("canvas")[0];
+  canvasEl.width = Game.DIM_X;
+  canvasEl.height = Game.DIM_Y;
 
   const ctx = canvasEl.getContext("2d");
-  ctx.fillStyle = "black";
-  ctx.fillRect(0, 0, 1000, 800);
-
-  // ctx.beginPath();
-  // ctx.arc(100, 100, 20, 0, 2*Math.PI, true);
-  // ctx.strokeStyle = "green";
-  // ctx.lineWidth = 5;
-  // ctx.stroke();
-  // ctx.fillStyle = "blue";
-  // ctx.fill();
+  const game = new Game();
+  new GameView(game, ctx).start();
 });
