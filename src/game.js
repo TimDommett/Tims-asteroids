@@ -9,7 +9,7 @@ const Util = require("./util");
 
 function Game() {
   this.asteroids = [];
-  addAsteroids();
+  this.addAsteroids();
 
 }
 
@@ -60,6 +60,36 @@ Game.prototype.randomPosition = function randomPosition() {
     Game.DIM_X * Math.random(),
     Game.DIM_Y * Math.random()
   ];
+};
+
+Game.prototype.wrap = function wrap(pos) {
+  return [
+    Util.wrap(pos[0], Game.DIM_X), Util.wrap(pos[1], Game.DIM_Y)
+  ];
+};
+
+Game.prototype.checkCollisions = function checkCollisions() {
+  const allObjects = this.allObjects();
+  for (let i = 0; i < allObjects.length; i++) {
+    for (let j = 0; j < allObjects.length; j++) {
+      const obj1 = allObjects[i];
+      const obj2 = allObjects[j];
+
+      if (obj1.isCollidedWith(obj2)) {
+        const collision = obj1.collideWith(obj2);
+        if (collision) return;
+      }
+    }
+  }
+};
+
+Game.prototype.step = function step() {
+    Game.prototype.moveObjects();
+    Game.prototype.checkCollisions();
+};
+
+Game.prototype.remove = function remove(asteroid) {
+
 };
 
 module.exports = Game;

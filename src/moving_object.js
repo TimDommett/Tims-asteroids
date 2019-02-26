@@ -1,12 +1,14 @@
 // Base class for anything that moves.
 // Most important methods are MovingObject.prototype.move, MovingObject.prototype.draw(ctx), MovingObject.prototype.isCollidedWith(otherMovingObject).
+const Util = require("./util");
+
 function MovingObject(options) {
   this.pos = options.pos;
   this.vel = options.vel;
   this.radius = options.radius;
   this.color = options.color;
-
-}
+  this.game = options.game;
+};
 
 
 MovingObject.prototype.draw = function draw(ctx) {
@@ -22,6 +24,7 @@ MovingObject.prototype.draw = function draw(ctx) {
 MovingObject.prototype.isWrappable = true;
 
 const NORMAL_FRAME_TIME_DELTA = 1000 / 60;
+
 MovingObject.prototype.move = function move(timeDelta) {
   // timeDelta is number of milliseconds since last move
   // if the computer is busy the time delta will be larger
@@ -40,6 +43,11 @@ MovingObject.prototype.move = function move(timeDelta) {
       this.remove();
     }
   }
+};
+
+MovingObject.prototype.isCollidedWith = function isCollidedWith(otherObject) {
+  const centerDist = Util.dist(this.pos, otherObject.pos);
+  return centerDist < (this.radius + otherObject.radius);
 };
 
 module.exports = MovingObject
