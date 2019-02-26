@@ -1,7 +1,7 @@
- // inherits from MovingObject
 const Util = require("./util");
 const MovingObject = require("./moving_object");
-
+const Ship = require("./ship");
+const Bullet = require("./bullet");
 
 const DEFAULTS = {
   COLOR: "#505050",
@@ -19,6 +19,7 @@ function Asteroid(options) {
   MovingObject.call(this, options);
 }
 
+// Must inherit before adding any properties (usually functions) to the Asteroid prototype
 Util.inherits(Asteroid, MovingObject);
 
 Asteroid.prototype.collideWith = function collideWith(otherObject) {

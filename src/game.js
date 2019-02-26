@@ -1,7 +1,3 @@
-// Holds collections of the asteroids, bullets, and your ship.
-// Game.prototype.step method calls Game.prototype.move on all the objects, and Game.prototype.checkCollisions checks for colliding objects.
-// Game.prototype.draw(ctx) draws the game.
-// Keeps track of dimensions of the space; wraps objects around when they drift off the screen.
 const Asteroid = require("./asteroid");
 const Bullet = require("./bullet");
 const Ship = require("./ship");
@@ -9,8 +5,10 @@ const Util = require("./util");
 
 function Game() {
   this.asteroids = [];
-  this.addAsteroids();
+  this.bullets = [];
+  this.ships = [];
 
+  this.addAsteroids();
 }
 
 Game.BG_COLOR = "#000000";
@@ -31,41 +29,25 @@ Game.prototype.add = function add(object) {
   }
 };
 
-// what about randomising position?
 Game.prototype.addAsteroids = function addAsteroids() {
-  for(let i = 0; i < Game.NUM_ASTEROIDS; i++){
-    this.add(new Asteroid({game: this }));
+  for (let i = 0; i < Game.NUM_ASTEROIDS; i++) {
+    this.add(new Asteroid({ game: this }));
   }
 };
 
-Game.prototype.draw = function draw(ctx) {
-  ctx.clearRect(0, 0, Game.DIM_X, Game.DIM_Y);
-  ctx.fillStyle = Game.BG_COLOR;
-  ctx.fillRect(0, 0, Game.DIM_X, Game.DIM_Y);
-
-  this.allObjects().forEach(function(object) {
-    object.draw(ctx);
+Game.prototype.addShip = function addShip() {
+  const ship = new Ship({
+    pos: this.randomPosition(),
+    game: this
   });
+
+  this.add(ship);
+
+  return ship;
 };
 
-Game.prototype.moveObjects = function moveObjects(delta) {
-  this.allObjects().forEach(function(object) {
-    object.move(delta);
-  });
-};
-
-
-Game.prototype.randomPosition = function randomPosition() {
-  return [
-    Game.DIM_X * Math.random(),
-    Game.DIM_Y * Math.random()
-  ];
-};
-
-Game.prototype.wrap = function wrap(pos) {
-  return [
-    Util.wrap(pos[0], Game.DIM_X), Util.wrap(pos[1], Game.DIM_Y)
-  ];
+Game.prototype.allObjects = function allObjects() {
+  return [].concat(this.ships, this.asteroids, this.bullets);
 };
 
 Game.prototype.checkCollisions = function checkCollisions() {
@@ -83,9 +65,32 @@ Game.prototype.checkCollisions = function checkCollisions() {
   }
 };
 
-Game.prototype.step = function step() {
-    Game.prototype.moveObjects();
-    Game.prototype.checkCollisions();
+Game.prototype.draw = function draw(ctx) {
+  ctx.clearRect(0, 0, Game.DIM_X, Game.DIM_Y);
+  ctx.fillStyle = Game.BG_COLOR;
+  ctx.fillRect(0, 0, Game.DIM_X, Game.DIM_Y);
+
+  this.allObjects().forEach(function(object) {
+    object.draw(ctx);
+  });
+};
+
+Game.prototype.isOutOfBounds = function isOutOfBounds(pos) {
+  return (pos[0] < 0) || (pos[1] < 0) ||
+    (pos[0] > Game.DIM_X) || (pos[1] > Game.DIM_Y);
+};
+
+Game.prototype.moveObjects = function moveObjects(delta) {
+  this.allObjects().forEach(function(object) {
+    object.move(delta);
+  });
+};
+
+Game.prototype.randomPosition = function randomPosition() {
+  return [
+    Game.DIM_X * Math.random(),
+    Game.DIM_Y * Math.random()
+  ];
 };
 
 Game.prototype.remove = function remove(object) {
@@ -100,13 +105,15 @@ Game.prototype.remove = function remove(object) {
   }
 };
 
-Game.prototype.allObjects = function allObjects() {
-  return [].concat(this.ships, this.asteroids, this.bullets);
+Game.prototype.step = function step(delta) {
+  this.moveObjects(delta);
+  this.checkCollisions();
 };
 
-Game.prototype.isOutOfBounds = function isOutOfBounds(pos) {
-  return (pos[0] < 0) || (pos[1] < 0) ||
-    (pos[0] > Game.DIM_X) || (pos[1] > Game.DIM_Y);
+Game.prototype.wrap = function wrap(pos) {
+  return [
+    Util.wrap(pos[0], Game.DIM_X), Util.wrap(pos[1], Game.DIM_Y)
+  ];
 };
 
 module.exports = Game;

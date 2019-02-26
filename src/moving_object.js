@@ -1,5 +1,3 @@
-// Base class for anything that moves.
-// Most important methods are MovingObject.prototype.move, MovingObject.prototype.draw(ctx), MovingObject.prototype.isCollidedWith(otherMovingObject).
 const Util = require("./util");
 
 function MovingObject(options) {
@@ -8,8 +6,11 @@ function MovingObject(options) {
   this.radius = options.radius;
   this.color = options.color;
   this.game = options.game;
-};
+}
 
+MovingObject.prototype.collideWith = function collideWith(otherObject) {
+  // default do nothing
+};
 
 MovingObject.prototype.draw = function draw(ctx) {
   ctx.fillStyle = this.color;
@@ -21,10 +22,14 @@ MovingObject.prototype.draw = function draw(ctx) {
   ctx.fill();
 };
 
+MovingObject.prototype.isCollidedWith = function isCollidedWith(otherObject) {
+  const centerDist = Util.dist(this.pos, otherObject.pos);
+  return centerDist < (this.radius + otherObject.radius);
+};
+
 MovingObject.prototype.isWrappable = true;
 
 const NORMAL_FRAME_TIME_DELTA = 1000 / 60;
-
 MovingObject.prototype.move = function move(timeDelta) {
   // timeDelta is number of milliseconds since last move
   // if the computer is busy the time delta will be larger
@@ -45,13 +50,8 @@ MovingObject.prototype.move = function move(timeDelta) {
   }
 };
 
-MovingObject.prototype.isCollidedWith = function isCollidedWith(otherObject) {
-  const centerDist = Util.dist(this.pos, otherObject.pos);
-  return centerDist < (this.radius + otherObject.radius);
+MovingObject.prototype.remove = function remove() {
+  this.game.remove(this);
 };
 
-MovingObject.prototype.collideWith = function collideWith(otherObject) {
-  // default do nothing
-};
-
-module.exports = MovingObject
+module.exports = MovingObject;
