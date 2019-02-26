@@ -25,6 +25,7 @@ Ship.RADIUS = 15;
 
 Util.inherits(Ship, MovingObject);
 
+
 Ship.prototype.power = function power(impulse) {
   this.vel[0] += impulse[0];
   this.vel[1] += impulse[1];

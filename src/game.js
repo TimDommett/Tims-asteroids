@@ -104,4 +104,9 @@ Game.prototype.allObjects = function allObjects() {
   return [].concat(this.ships, this.asteroids, this.bullets);
 };
 
+Game.prototype.isOutOfBounds = function isOutOfBounds(pos) {
+  return (pos[0] < 0) || (pos[1] < 0) ||
+    (pos[0] > Game.DIM_X) || (pos[1] > Game.DIM_Y);
+};
+
 module.exports = Game;
